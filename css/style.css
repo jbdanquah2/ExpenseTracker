@@ -1,0 +1,50 @@
+body {
+    background-color: darkgoldenrod;
+    color:  #fefefe;
+    background-image: url(../img/expesne5.jpg);
+    background-size: cover;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+
+
+
+@media  (max-width: 700px) {
+       .landing #login {
+         margin-top: 40% !important;
+         
+       };
+       
+       #app-logo {
+            margin-top: 30% !important;
+            text-align:  center;
+        }
+}
+
+.card {
+     background: rgba(254, 254, 254,0.4);
+}
+table td {
+    color: darkgoldenrod;
+    background: rgba(254, 254, 254,0.6);
+    font-weight: 500;
+    
+}
+
+#app-logo {
+    margin: 50px 30px ;
+}
+
+input {
+    border: none;
+    padding: 15px;
+    align-self: center;
+    min-width: 80px;
+    max-width: 500px;
+}
+
+#sign_up {
+    display: none;
+}
+
+ 
