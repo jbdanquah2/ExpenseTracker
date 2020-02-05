@@ -25,9 +25,9 @@ if (isset($_GET['save'])) {
 ?>
 
 <div class="row" id="home">
-        <div class="col-md col-sm p-5">
+        <div class="col-md col-sm p-5 ">
             
-            <div id="record" class="m">
+            <div id="record" class="position-fixed">
                 <h2 class=" mb-2">Record</h2>
                 <form method="GET">                
                     <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
