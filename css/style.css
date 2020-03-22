@@ -26,7 +26,7 @@ body {
 }
 
 .card {
-     background: rgba(254, 254, 254,0.4);
+     background: rgba(254, 254, 254,0.5);
 }
 table td {
     color: darkgoldenrod;
@@ -45,7 +45,13 @@ input {
     align-self: center;
     min-width: 80px;
     max-width: 500px;
+    color:  #fefefe !important;
 }
+
+input::placeholder {
+    color: #fefefe!important;
+}
+
 
 #sign_up {
     display: none;

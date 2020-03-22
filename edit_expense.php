@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "header.php";
+
 include_once "config/connection.php";
 include_once "objects/expense.php";
 
@@ -10,12 +10,27 @@ $db = $database->getConnection();
 
 $expense = new Expense($db);
 
+if (isset($_SESSION['user_Id'])) {
+      $st = $expense -> getExpense($_SESSION['user_Id']);
+      $rows = $st ->fetch(PDO::FETCH_ASSOC);
+      $count = 0;
+      $stmt = $expense -> countExpense($_SESSION['user_Id']);
+      $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
+      $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
+        $month = $rows['month_year'];
+        $name ="Welcome ". $_SESSION['first_name'];
+        $budget = $rows['budget_amount'];
+        $_SESSION['$budget_id'] = $rows['budget_id'];
+        $balance = $budget - $stmt['total_expense'] ;
+  }
+
+include "header.php";
 if (isset($_GET['save'])) {
     $expense_name = $_GET['expense_name'];
     $cost = $_GET['cost'];
     $description = $_GET['description'];
     
-    $p = $expense -> postExpense($expense_name,$cost,$description,$_SESSION['user_Id']);
+    $p = $expense -> postExpense($expense_name,$cost,$description,$_SESSION['user_Id'],$_SESSION['$budget_id']);
     
     if ($p) {
          header("Location:home.php");
@@ -45,17 +60,12 @@ if (isset($_GET['save'])) {
 
 <?php
                                   
-  if (isset($_SESSION['user_Id'])) {
-      $count = 0;
-      $stmt = $expense -> countExpense($_SESSION['user_Id']);
-      $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
-      $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;;
-  }
+  
 ?>
                 <br>
                 <table class="table table-hover" class="p-3">
-                    <h3>Review</h3> | <small class="text-warning">Count: <?php echo $num_expense?></small> | <small class="text-warning">Total: <?php echo $total_expense?></small>
-                    <input class="form-control" id="myInput" type="text" placeholder="Search Expense...">
+                    <h3>Update</h3> | <small class="text-warning">Count: <?php echo $num_expense?></small> | <small class="text-warning">Total: <?php echo $total_expense?></small>
+<!--                    <input class="form-control" id="myInput" type="text" placeholder="Search Expense...">-->
                     <thead class="thead-dark">
                       <tr>         
                         <th scope="col">#</th>

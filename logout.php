@@ -18,7 +18,7 @@ unset($_SESSION['first_name']);
 unset($_SESSION['last_name']);
 unset($_SESSION['email']);
 unset($_SESSION['pssword']);
-$_SESSION['login'] = 'logout';
+unset($_SESSION['login']);
 header("Location: index.php");
 }
 ?>

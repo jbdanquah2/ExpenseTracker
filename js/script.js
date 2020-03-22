@@ -24,4 +24,14 @@ function myFunction() {
   }
 }
 
+function askDelete(id) {
+  
+    var answer = confirm("Delete? Are you sure?");
+    if (answer){
+        window.location = "home.php?deleteExpense=" + id;
+        alert("Expense has been Deleted!");
+    }
+
+}
+
 

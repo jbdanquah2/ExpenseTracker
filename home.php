@@ -1,25 +1,52 @@
 <?php
 session_start();
-include "header.php";
 include_once "config/connection.php";
 include_once "objects/expense.php";
-
-
 $database = new Database();
 $db = $database->getConnection();
 
 $expense = new Expense($db);
+                                  
+  if (isset($_SESSION['user_Id'])) {
+      $st = $expense -> getExpense($_SESSION['user_Id']);
+      $rows = $st ->fetch(PDO::FETCH_ASSOC);
+      $count = 0;
+      $stmt = $expense -> countExpense($_SESSION['user_Id']);
+      $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
+      $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
+        $month = $rows['month_year'];
+        $name ="Welcome ". $_SESSION['first_name'];
+        $budget = $rows['budget_amount'];
+        $_SESSION['budget_id'] = $rows['budget_id'];
+        $balance = $budget - $stmt['total_expense'] ;
+  }
+  
+include "header.php";
+
+
+if (isset($_SESSION['user_Id']) == "") {
+    header("Location: index.php");
+}
+
+
+
 
 if (isset($_GET['save'])) {
-    $expense_name = $_GET['expense_name'];
-    $cost = $_GET['cost'];
-    $description = $_GET['description'];
     
-    $p = $expense -> postExpense($expense_name,$cost,$description,$_SESSION['user_Id']);
+    $expense->expense_name = $_GET['expense_name'];
+    $expense->cost = $_GET['cost'];
+    $expense->description = $_GET['description'];
+    $expense->user_Id = $_SESSION['user_Id'];
+    $expense->budget_id = $_SESSION['budget_id'];
+    
+     $p = $expense -> postExpense();
     
     if ($p) {
          header("Location:home.php");
+    }else {
+        echo 'nope!!';
     }
+   
     
 }
 ?>
@@ -43,15 +70,6 @@ if (isset($_GET['save'])) {
             <div id="review" class="">
                 
 
-<?php
-                                  
-  if (isset($_SESSION['user_Id'])) {
-      $count = 0;
-      $stmt = $expense -> countExpense($_SESSION['user_Id']);
-      $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
-      $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;;
-  }
-?>
                 <br>
                 <table class="table table-hover" class="p-3">
                     <h3>Review</h3> | <small class="text-warning">Count: <?php echo $num_expense?></small> | <small class="text-warning">Total: <?php echo $total_expense?></small>
@@ -74,6 +92,7 @@ if (isset($_GET['save'])) {
       $stmt = $expense -> getExpense($_SESSION['user_Id']);
       while($rows = $stmt ->fetch(PDO::FETCH_ASSOC)) {
           $count++;
+          
           $expense_id = $rows['expense_id'];
           $expense_name = $rows['expense_name'];
           $cost = $rows['cost'];
@@ -87,7 +106,10 @@ if (isset($_GET['save'])) {
                         <td>'.$cost.'</td>
                         <td>'.$description.'</td>
                         <td>'.$created_datetime.'</td>
-                        <td><a href="edit_expense.php?expense_id='.$expense_id.'"><button type="button" class="bg-warning" name="expense_id" value="'.$expense_id.'"<><small>Update</small></button></a></td>
+                        <td><a href="edit_expense.php?expense_id='.$expense_id.'"><button type="button" class="bg-warning" name="expense_id" value="'.$expense_id.'"<><small>Update</small></button></a>
+                        
+                        <button onclick="askDelete('.$expense_id.')" type="button" class="bg-warning" name="expense_id" value="'.$expense_id.'"<><small>Delete..</small></button>
+                        </td>
                         </tr>
                         ';
         
@@ -96,6 +118,16 @@ if (isset($_GET['save'])) {
    echo 'hmmmm';
 }
 
+ if (isset($_GET['deleteExpense'])) {
+   
+     $stmt = $expense->deleteExpense($_GET['deleteExpense']);
+     if ($stmt) {         
+        
+        header("Location: home.php");
+        
+     }
+     echo '<script>Materialize.toast("Expense Deleted", 3000, "rounded");</script>';
+ }                   
 ?>
                                       
                    </tbody>
