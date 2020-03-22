@@ -62,7 +62,7 @@ ob_start();
     echo'   
                 <ul class="navbar-nav mr-auto">
                   <li class="nav-item active">
-                    <a class="nav-link" href="#"><span class="text-white">Sign up</span> <span class="text-info">| </span> <span class="text-success">Login to track your expenses and budget</span><span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#"><span onclick="myFunction()" class="text-white">Sign up</span> <span class="text-info">/ </span> <span class="text-success">Login to track your expenses and budget</span><span class="sr-only">(current)</span></a>
                   </li>
                 </ul>
                 <span class="navbar-text">  

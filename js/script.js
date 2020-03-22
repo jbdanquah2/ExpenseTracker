@@ -8,19 +8,21 @@ $(document).ready(function(){
 });
 
 
+sign_up.style.display = "none";
 function myFunction() {
 
   var sign_up = document.getElementById("sign_up");
   var login = document.getElementById("landing");
   var sign = document.getElementById("sign");  
-  if (sign_up.style.display === "none") {
+  
+  if (sign_up.style.display == "none") {
     sign_up.style.display = "block";
      login.style.display = "none"; 
-    sign.value ='Click to Login';
+    sign.value ='Login';
   } else {
     sign_up.style.display = "none";
     login.style.display = "block";
-    sign.value ='Click to Sign Up';
+    sign.value ='Sign Up';
   }
 }
 

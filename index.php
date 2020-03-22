@@ -1,7 +1,7 @@
 <?php
 ob_start();
 session_start();
-$_SESSION['login'] = '';
+
 include_once "header.php";
 include_once "config/connection.php";
 include_once "objects/user.php";
@@ -57,7 +57,7 @@ if (isset($_SESSION['user_Id']) != "") {
                         <input required name="email" class="mb-2 mr-5 pb-2 pt-2 pl-4 pr-4 border-bottom" type="email" placeholder="yjbdanquah@gmail.com"><br>
                         <input required name="pssword" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="password" placeholder="password">
                         <div class="bg-transparent border-success">
-                            Please login to tracker your expenses
+                            Please login to track your expenses
                         </div>
                         <input name="login" class="btn btn-primary" type="submit" value="Login">
                     </form>
@@ -70,7 +70,7 @@ if (isset($_SESSION['user_Id']) != "") {
 </div>
 <div class="row landing" id="sign_up">
     <div class="offset-3 col-md-10">
-        <div id="login" class="float-right">
+        <div id="login" class="float-right ">
             <div class="mr-5 ml- pt-5 pb-5 pl-5 card blue-grey darken-2">
                 <h3 class="bg-transparent border-success mb-2">Sign Up</h3>
                 <div class="bg-transparent text-success">
