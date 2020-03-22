@@ -2,16 +2,26 @@
 session_start();
 include_once "config/connection.php";
 include_once "objects/expense.php";
+
+// get db connection and create db object
 $database = new Database();
 $db = $database->getConnection();
 
+// create expense objects
 $expense = new Expense($db);
-                                  
+$expense2   = new Expense($db);
+
+
   if (isset($_SESSION['user_Id'])) {
-      $st = $expense -> getExpense($_SESSION['user_Id']);
+      
+//gets budget, budget type, 
+//total expense, count of expense...
+      
+      $expense2 ->user_Id = $_SESSION['user_Id'];
+      $st = $expense2 -> getExpense();
       $rows = $st ->fetch(PDO::FETCH_ASSOC);
       $count = 0;
-      $stmt = $expense -> countExpense($_SESSION['user_Id']);
+      $stmt = $expense2 -> countExpense();
       $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
       $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
         $month = $rows['month_year'];
@@ -20,11 +30,13 @@ $expense = new Expense($db);
         $_SESSION['budget_id'] = $rows['budget_id'];
         $balance = $budget - $stmt['total_expense'] ;
   }
-  
+
+//includes the header file
 include "header.php";
 
 
 if (isset($_SESSION['user_Id']) == "") {
+// checks if logged in else return to index/login page
     header("Location: index.php");
 }
 
@@ -33,11 +45,13 @@ if (isset($_SESSION['user_Id']) == "") {
 
 if (isset($_GET['save'])) {
     
+//inserts new expense record to db
+    
     $expense->expense_name = $_GET['expense_name'];
     $expense->cost = $_GET['cost'];
     $expense->description = $_GET['description'];
-    $expense->user_Id = $_SESSION['user_Id'];
     $expense->budget_id = $_SESSION['budget_id'];
+    $expense->user_Id = $_SESSION['user_Id'];
     
      $p = $expense -> postExpense();
     
@@ -88,8 +102,12 @@ if (isset($_GET['save'])) {
                          
 <?php
     if (isset($_SESSION['user_Id'])) {
+//check if user is logged in and then
+//loads all expense recorded by the user if any
+        
       $count = 0;
-      $stmt = $expense -> getExpense($_SESSION['user_Id']);
+      $expense2 ->user_Id = $_SESSION['user_Id'];
+      $stmt = $expense2 -> getExpense();
       while($rows = $stmt ->fetch(PDO::FETCH_ASSOC)) {
           $count++;
           
@@ -119,22 +137,20 @@ if (isset($_GET['save'])) {
 }
 
  if (isset($_GET['deleteExpense'])) {
-   
-     $stmt = $expense->deleteExpense($_GET['deleteExpense']);
+ //checks and delete expense with confirmation from user
+     $expense->expense_id = $_GET['deleteExpense'];
+     $stmt = $expense->deleteExpense();
      if ($stmt) {         
         
         header("Location: home.php");
         
      }
-     echo '<script>Materialize.toast("Expense Deleted", 3000, "rounded");</script>';
+//     echo '<script>Materialize.toast("Expense Deleted", 3000, "rounded");</script>';
  }                   
 ?>
                                       
                    </tbody>
-           
                 </table>
-<!-- Modal -->
-    
             </div>
         </div>
     </div>

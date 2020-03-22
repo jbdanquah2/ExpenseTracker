@@ -8,6 +8,7 @@ public $cost;
 public $description;
 public $user_Id;
 public $budget_id;
+public $expense_id;
 
 
 
@@ -42,7 +43,7 @@ return false;
     }
 }
     
-public function getExpense($user_Id){
+public function getExpense(){
 
     try{
 
@@ -65,7 +66,7 @@ public function getExpense($user_Id){
         WHERE
             user_Id = :user_Id
         ORDER BY expense_id DESC;");
-        $statement->execute(array(":user_Id"=>$user_Id));
+        $statement->execute(array(":user_Id"=>$this->user_Id));
         //$dataRows = $statement->fetch(PDO::FETCH_ASSOC);
 
 return $statement;
@@ -75,12 +76,12 @@ return $statement;
         }
 }  
 
-public function getEditExpense($expense_id){
+public function getEditExpense(){
 
     try{
 
         $statement = $this->conn->prepare("SELECT expense_id,expense_name, cost, description, user_Id, DATE_FORMAT(created_datetime, '%D %b, %Y') as created_datetime FROM expense WHERE expense_id = :expense_id ORDER BY DATE_FORMAT(created_datetime, '%D %b,%Y')  desc;");
-        $statement->execute(array(":expense_id"=>$expense_id));
+        $statement->execute(array(":expense_id"=>$this->expense_id));
         $dataRows = $statement->fetch(PDO::FETCH_ASSOC);
 
 return $dataRows;
@@ -90,7 +91,7 @@ return $dataRows;
         }
     } 
 
-public function countExpense($user_Id) {
+public function countExpense() {
         try {
             $stmt = $this->conn->prepare("SELECT 
                 COUNT(*) AS 'num_expense', SUM(cost) AS 'total_expense'
@@ -100,7 +101,7 @@ public function countExpense($user_Id) {
                 expense_budget eb ON e.expense_id = eb.expense_id
             WHERE
                 e.User_Id = :user_Id;");
-            $stmt -> execute(array(":user_Id" => $user_Id));
+            $stmt -> execute(array(":user_Id" => $this->user_Id));
             $dataRows = $stmt->fetch(PDO::FETCH_ASSOC);
     return $dataRows;
         } catch (PDOException $ex){
@@ -108,13 +109,13 @@ public function countExpense($user_Id) {
         }
     }
 
-public function putExpense($expense_id,$expense_name,$cost,$description) {
+public function putExpense() {
     try {
         $stmt = $this->conn->prepare("UPDATE expense SET expense_name = :expense_name, cost = :cost , description = :description WHERE expense_id = :expense_id;");
-        $stmt -> bindParam(":expense_id",$expense_id);
-        $stmt -> bindParam(":expense_name",$expense_name);
-        $stmt -> bindParam(":cost",$cost);
-        $stmt -> bindParam(":description",$description);
+        $stmt -> bindParam(":expense_id",$this->expense_id);
+        $stmt -> bindParam(":expense_name",$this->expense_name);
+        $stmt -> bindParam(":cost",$this->cost);
+        $stmt -> bindParam(":description",$this->description);
 
         $stmt -> execute();
         return true;
@@ -124,14 +125,14 @@ public function putExpense($expense_id,$expense_name,$cost,$description) {
     
 }
     
-public function deleteExpense($expense_id) {
+public function deleteExpense() {
     try {
         $stmt = $this->conn->prepare("
         DELETE FROM expense_budget WHERE expense_id = :expense_id;
         DELETE FROM expense WHERE expense_id = :expense_id;
         ");
         
-        $stmt -> bindParam(":expense_id", $expense_id);
+        $stmt -> bindParam(":expense_id", $this->expense_id);
         $stmt->execute();
         return true;
     }catch(PDOException $ex){

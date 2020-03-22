@@ -32,10 +32,19 @@ ob_start();
     if(isset($_SESSION['user_Id'])!="") {
    echo '<div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto ">
-              <li class="nav-item active ">
-                <a class="nav-link text-white" href="#">'.$name.'<span class="sr-only">(current)</span></a>
+              <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="/" role="button" aria-haspopup="true" aria-expanded="false">'.$name.'</a>
+                <div class="dropdown-menu bg-danger">
+                  <a class="dropdown-item" href="#">Budget</a>
+                  <a class="dropdown-item" href="#">Profile</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="logout.php?logout">Logout</a>
+                </div>
               </li>
-              <li class="nav-item active ">
+       <!--       <li class="nav-item active ">
+                <a class="nav-link text-white" href="#">'.$name.'<span class="sr-only">(current)</span></a>
+              </li> -->
+              <li class="nav-item ">
                 <a class="nav-link text-white" href="#">Month: '.$month.'</a>
               </li>
               <li class="nav-item">

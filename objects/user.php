@@ -3,6 +3,15 @@
 class User {
 
 private $conn;
+public $email;
+public $first_Name;
+public $last_Name;
+public $pssword;
+public $budget_type;
+public $month_year;
+public $budget_amount;
+public $budget_period_start;
+public $budget_period_end;
 
 
     public function __construct($db){
@@ -10,14 +19,11 @@ private $conn;
 //        echo " i'm also connected";
     }
 
-public function createUser($first_name,
-                           $last_name,
-                           $email,                     
-                           $pssword,$budget_type,$month_year,$budget_amount,$budget_period_start,$budget_period_end){
+public function createUser(){
 
 
     $stmt = $this->conn->prepare("SELECT email FROM user WHERE email=:email");
-    $stmt->bindparam(":email",$email);
+    $stmt->bindparam(":email",$this->email);
        $stmt->execute();
         if ($stmt->rowCount() > 0) {
              echo "<br><span class='text-danger mb-0 ml-2'>Username or email already exist</span>";
@@ -41,15 +47,15 @@ public function createUser($first_name,
             ");
             
 
-            $statement->bindparam(":first_name",$first_name);
-            $statement->bindparam(":last_name",$last_name);
-            $statement->bindparam(":email",$email);
-            $statement->bindparam(":pssword",$pssword);
-            $statement->bindparam(":budget_type",$budget_type);
-            $statement->bindparam(":month_year",$month_year);
-            $statement->bindparam(":budget_amount",$budget_amount);
-            $statement->bindparam(":budget_period_start",$budget_period_start);
-            $statement->bindparam(":budget_period_end",$budget_period_end);
+            $statement->bindparam(":first_name",$this->first_name);
+            $statement->bindparam(":last_name",$this->last_name);
+            $statement->bindparam(":email",$this->email);
+            $statement->bindparam(":pssword",$this->pssword);
+            $statement->bindparam(":budget_type",$this->budget_type);
+            $statement->bindparam(":month_year",$this->month_year);
+            $statement->bindparam(":budget_amount",$this->budget_amount);
+            $statement->bindparam(":budget_period_start",$this->budget_period_start);
+            $statement->bindparam(":budget_period_end",$this->budget_period_end);
 
             $statement->execute();
             
@@ -62,12 +68,12 @@ return false;
 
 
 
-public function getUser($email){
+public function getUser(){
 
     try{
 
         $statement = $this->conn->prepare("SELECT user_Id,first_name,last_name,email,pssword, status FROM user WHERE email=:email AND status ='Active'");
-        $statement->execute(array(":email"=>$email));
+        $statement->execute(array(":email"=>$this->email));
         $dataRows = $statement->fetch(PDO::FETCH_ASSOC);
 
     return $dataRows;

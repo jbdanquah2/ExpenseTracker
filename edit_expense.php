@@ -9,31 +9,38 @@ $database = new Database();
 $db = $database->getConnection();
 
 $expense = new Expense($db);
-
+$expense3 = new Expense($db);
 if (isset($_SESSION['user_Id'])) {
-      $st = $expense -> getExpense($_SESSION['user_Id']);
+      $expense->user_Id = $_SESSION['user_Id'];
+      $st = $expense -> getExpense();
       $rows = $st ->fetch(PDO::FETCH_ASSOC);
       $count = 0;
-      $stmt = $expense -> countExpense($_SESSION['user_Id']);
+      $stmt = $expense -> countExpense();
       $num_expense = $stmt['num_expense'] > 1 ? $stmt['num_expense']." items" : $stmt['num_expense']." item";
       $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
         $month = $rows['month_year'];
         $name ="Welcome ". $_SESSION['first_name'];
         $budget = $rows['budget_amount'];
-        $_SESSION['$budget_id'] = $rows['budget_id'];
+        //$_SESSION['$budget_id'] = $rows['budget_id'];
         $balance = $budget - $stmt['total_expense'] ;
   }
 
 include "header.php";
 if (isset($_GET['save'])) {
-    $expense_name = $_GET['expense_name'];
-    $cost = $_GET['cost'];
-    $description = $_GET['description'];
+    //inserts new expense record to db
     
-    $p = $expense -> postExpense($expense_name,$cost,$description,$_SESSION['user_Id'],$_SESSION['$budget_id']);
+    $expense->expense_name = $_GET['expense_name'];
+    $expense->cost = $_GET['cost'];
+    $expense->description = $_GET['description'];
+    $expense->budget_id = $_SESSION['budget_id'];
+    $expense->user_Id = $_SESSION['user_Id'];
+    
+     $p = $expense -> postExpense();
     
     if ($p) {
          header("Location:home.php");
+    }else {
+        echo 'nope!!';
     }
     
 }
@@ -82,9 +89,11 @@ if (isset($_GET['save'])) {
     
     
     if (isset($_GET['expense_id'])) {
-      $expense_id = $_GET['expense_id'];
+// get the expense to be edited
+        
       $count = 0;
-      $stmt = $expense -> getEditExpense($expense_id);
+      $expense3->expense_id = $_GET['expense_id'];
+      $stmt = $expense3 -> getEditExpense();
       
           $count++;
           $expense_id = $stmt['expense_id'];
@@ -110,12 +119,14 @@ if (isset($_GET['save'])) {
 }
  
 if (isset($_GET['exp_id'])) {
-    $expense_name = $_GET['expense_name'];
-    $cost = $_GET['cost'];
-    $description = $_GET['description'];
-    $expense_id = $_GET['exp_id'];
+//updates the expense with the new changes
+    
+    $expense3->expense_name = $_GET['expense_name'];
+    $expense3->cost = $_GET['cost'];
+    $expense3->description = $_GET['description'];
+    $expense3->expense_id = $_GET['exp_id'];
 
-    $stmt = $expense -> putExpense($expense_id,$expense_name,$cost,$description);
+    $stmt = $expense3 -> putExpense();
     header("location:home.php");
 }
 ?>
