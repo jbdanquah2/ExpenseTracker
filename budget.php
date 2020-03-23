@@ -69,11 +69,11 @@ if (isset($_GET['save'])) {
         <div class="col-md col-sm p-5 ">
             
             <div id="record" class="position-fixed">
-                <h5 class=" mb-2">Record Expenses</h5>
+                <h5 class=" mb-2">Record Budget</h5>
                 <form method="GET">                
                     <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
-                    <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="cost"><br>
-                    <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Description"></textarea>
+                    <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="Budget"><br>
+                    <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Item Description"></textarea>
                     <br>
                     <input name="save" class="btn btn-primary"  type="submit" value="save">
                 </form>            
@@ -83,19 +83,18 @@ if (isset($_GET['save'])) {
         <div class="col-md col-sm">
             <div id="review" class="">
                 
-
                 <br>
                 <table class="table table-hover" class="p-3">
-                    <h5>Review Expenses</h5> | <span class="text-warning">Count: <?php echo $num_expense?></span> | <span class="text-warning">Total: <?php echo $total_expense?></span>
-                    <input class="form-control" id="myInput" type="text" placeholder="Search Expense...">
+                    <h5>Review Budget</h5> | <span class="text-warning">Count: <?php echo $num_expense?></span> | <span class="text-warning">Total: <?php echo $total_expense?></span>
+                    <input class="form-control" id="myInput" type="text" placeholder="Search Budget...">
                     <thead class="thead-dark">
                       <tr>         
                         <th scope="col">#</th>
                         <th scope="col">Expense</th>
-                        <th scope="col">Cost(GH¢)</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Date Recorded</th>
-                        <th scope="col">Edit</th>  
+                        <th scope="col">Budget (GH¢)</th>
+                        <th scope="col">Actual</th>
+                        <th scope="col">Over Budget</th>
+                        <th scope="col">Under Budget</th>  
                       </tr>
                     </thead>
                     <tbody id="myTable" class="thead-dark">

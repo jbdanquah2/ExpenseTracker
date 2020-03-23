@@ -20,8 +20,6 @@ public $expense_id;
 public function postExpense(){
 
     try{
-
-
         $statement = $this->conn->prepare(
         "INSERT INTO expense(expense_name, cost, description, user_Id) VALUES (:expense_name,:cost, :description, :user_Id);
          set @eid = last_insert_id();
@@ -46,7 +44,6 @@ return false;
 public function getExpense(){
 
     try{
-
         $statement = $this->conn->prepare("SELECT 
             e.expense_id,
             b.budget_amount,

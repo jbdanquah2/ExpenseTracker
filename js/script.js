@@ -26,14 +26,25 @@ function myFunction() {
   }
 }
 
-function askDelete(id) {
-  
-    var answer = confirm("Delete? Are you sure?");
-    if (answer){
-        window.location = "home.php?deleteExpense=" + id;
-        alert("Expense has been Deleted!");
-    }
+function askDelete(id,count) {
+      if (count != 1) {
+        alertify.confirm("<p class='bg-muted'><span class='text-warning'>Expense</span><span class='text-secondary'>|</span><span class='text-danger'>Tracker</span>","Delete? Are you sure?</p>", 
+        function onOk() {
+            //delay showing the confirm again 
+            //till the first confirm is actually closed.
+             window.location = "home.php?deleteExpense=" + id;
+             window.location = "home.php";
+                alertify.alert("<p class='bg-muted'><span class='text-warning'>Expense</span><span class='text-secondary'>|</span><span class='text-danger'>Tracker</span>","Expense has been Deleted!</p>");
+        },
+        function onCancel() {
+            //no delay, this will fail to show!
+            alertify.confirm("this will not be shown!");
+        }
+     );
 
+    }else {
+          alertify.alert("<p class='bg-muted'><span class='text-warning'>Expense</span><span class='text-secondary'>|</span><span class='text-danger'>Tracker</span>","Can't Delete! Number of Expense can't be zero</p>");
+    }
 }
 
 

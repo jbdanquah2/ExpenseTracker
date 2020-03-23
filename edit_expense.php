@@ -50,8 +50,8 @@ if (isset($_GET['save'])) {
         <div class="col-md col-sm p-5">
             
             <div id="record" class="m">
-                <h2 class=" mb-2">Record</h2>
-                <form method="GET">                
+                <h3 class=" mb-2">Record</h3>
+                <form method="GET" class="">                
                     <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
                     <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="cost"><br>
                     <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Description"></textarea>
