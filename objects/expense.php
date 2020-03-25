@@ -3,12 +3,13 @@
 class Expense {
 
 private $conn;
-public $expense_name;
+public $expense_item_name;
 public $cost;
 public $description;
 public $user_Id;
 public $budget_id;
 public $expense_id;
+public $expense_item_id;
 
 
 
@@ -21,16 +22,14 @@ public function postExpense(){
 
     try{
         $statement = $this->conn->prepare(
-        "INSERT INTO expense(expense_name, cost, description, user_Id) VALUES (:expense_name,:cost, :description, :user_Id);
-         set @eid = last_insert_id();
-         INSERT INTO expense_budget(expense_id, budget_id) VALUES(@eid, :budget_id);
+        "INSERT INTO expense(expense_item_id, cost, description, user_Id) VALUES (:expense_item_id,:cost, :description, :user_Id);
         ");
         
-        $statement->bindparam(":expense_name",$this->expense_name);
+        $statement->bindparam(":expense_item_id",$this->expense_item_id);
         $statement->bindparam(":cost",$this->cost);
         $statement->bindparam(":description",$this->description);
         $statement->bindparam(":user_Id",$this->user_Id);
-        $statement->bindparam(":budget_id",$this->budget_id);
+//        $statement->bindparam(":budget_id",$this->budget_id);
         $statement->execute();
 
 return true;
@@ -44,24 +43,27 @@ return false;
 public function getExpense(){
 
     try{
-        $statement = $this->conn->prepare("SELECT 
+        $statement = $this->conn->prepare("SELECT DISTINCT
+            e.user_id,
             e.expense_id,
-            b.budget_amount,
-            b.budget_id,
-            b.month_year,
-            e.expense_name,
+            e.expense_item_id,
             e.cost,
             e.description,
-            e.user_Id,
-            DATE_FORMAT(e.created_datetime, '%D %b, %Y') AS created_datetime
+            ei.expense_item_name,
+            ei.expense_item_desc,
+            DATE_FORMAT(e.created_datetime, '%D %b, %Y') AS created_datetime,
+            b.budget_id,
+            b.budget_type,
+            b.month_year,
+            b.budget_amount
         FROM
             expense e
                 JOIN
-            expense_budget eb ON eb.expense_id = e.expense_id
+            expense_item ei ON ei.expense_item_id = e.expense_item_id
                 JOIN
-            budget b ON b.budget_id = eb.budget_id
+            budget b ON b.user_id = e.user_id
         WHERE
-            user_Id = :user_Id
+            e.user_id = :user_Id
         ORDER BY expense_id DESC;");
         $statement->execute(array(":user_Id"=>$this->user_Id));
         //$dataRows = $statement->fetch(PDO::FETCH_ASSOC);
@@ -77,11 +79,23 @@ public function getEditExpense(){
 
     try{
 
-        $statement = $this->conn->prepare("SELECT expense_id,expense_name, cost, description, user_Id, DATE_FORMAT(created_datetime, '%D %b, %Y') as created_datetime FROM expense WHERE expense_id = :expense_id ORDER BY DATE_FORMAT(created_datetime, '%D %b,%Y')  desc;");
+        $statement = $this->conn->prepare("SELECT 
+            expense_id,
+            expense_item_name,
+            cost,
+            description,
+            user_Id,
+            DATE_FORMAT(e.created_datetime, '%D %b, %Y') AS created_datetime
+        FROM
+            expense e
+                JOIN
+            expense_item ei ON ei.expense_item_id = e.expense_item_id
+        WHERE
+            expense_id =:expense_id;");
         $statement->execute(array(":expense_id"=>$this->expense_id));
         $dataRows = $statement->fetch(PDO::FETCH_ASSOC);
 
-return $dataRows;
+return $dataRows; 
 
         } catch (PDOException $ex){
         echo $ex->getMessage();
@@ -94,10 +108,8 @@ public function countExpense() {
                 COUNT(*) AS 'num_expense', SUM(cost) AS 'total_expense'
             FROM
                 expense e
-                    JOIN
-                expense_budget eb ON e.expense_id = eb.expense_id
             WHERE
-                e.User_Id = :user_Id;");
+                e.user_id = :user_Id;");
             $stmt -> execute(array(":user_Id" => $this->user_Id));
             $dataRows = $stmt->fetch(PDO::FETCH_ASSOC);
     return $dataRows;
@@ -108,9 +120,9 @@ public function countExpense() {
 
 public function putExpense() {
     try {
-        $stmt = $this->conn->prepare("UPDATE expense SET expense_name = :expense_name, cost = :cost , description = :description WHERE expense_id = :expense_id;");
+        $stmt = $this->conn->prepare("UPDATE expense SET cost = :cost , description = :description WHERE expense_id = :expense_id;");
         $stmt -> bindParam(":expense_id",$this->expense_id);
-        $stmt -> bindParam(":expense_name",$this->expense_name);
+//        $stmt -> bindParam(":expense_name",$this->expense_name);
         $stmt -> bindParam(":cost",$this->cost);
         $stmt -> bindParam(":description",$this->description);
 
@@ -137,8 +149,36 @@ public function deleteExpense() {
     }
   }
     
+public function getExpenseItems(){
+
+    try{
+        $statement = $this->conn->prepare("SELECT 
+            ei.expense_item_id,
+            ei.expense_item_name,
+            ei.expense_item_desc,
+            b.budget_id,
+            b.user_id,
+            b.budget_type,
+            b.month_year,
+            b.budget_amount,
+            b.budget_period_start,
+            b.budget_period_end,
+            b.created_datetime
+        FROM
+            expense_item ei 
+        JOIN budget_line_item bli on bli.expense_item_id = ei.expense_item_id
+        JOIN budget b on b.budget_id = bli.budget_id
+        WHERE b.user_id =:user_Id
+        ORDER BY  ei.expense_item_id desc;");
+        $statement->execute(array(":user_Id"=>$this->user_Id));
+        //$dataRows = $statement->fetch(PDO::FETCH_ASSOC);
+
+return $statement;
+
+        } catch (PDOException $ex){
+        echo $ex->getMessage();
+        }
+}  
 }
-
-
 ?>
 

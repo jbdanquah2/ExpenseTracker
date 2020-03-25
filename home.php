@@ -10,7 +10,7 @@ $db = $database->getConnection();
 // create expense objects
 $expense = new Expense($db);
 $expense2   = new Expense($db);
-
+$expense3   = new Expense($db);
 
   if (isset($_SESSION['user_Id'])) {
       
@@ -26,7 +26,7 @@ $expense2   = new Expense($db);
       $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
         $month = $rows['month_year'];
         $name ="Welcome ". $_SESSION['first_name'];
-        $budget = $rows['budget_amount'];
+        $budget = $rows['budget_amount'] > 0 ? $rows['budget_amount'] : 0;
         $_SESSION['budget_id'] = $rows['budget_id'];
         $balance = $budget - $stmt['total_expense'] ;
   }
@@ -47,10 +47,10 @@ if (isset($_GET['save'])) {
     
 //inserts new expense record to db
     
-    $expense->expense_name = $_GET['expense_name'];
+    $expense->expense_item_id = $_GET['expense_item_id'];
     $expense->cost = $_GET['cost'];
     $expense->description = $_GET['description'];
-    $expense->budget_id = $_SESSION['budget_id'];
+//    $expense->budget_id = $_SESSION['budget_id'];
     $expense->user_Id = $_SESSION['user_Id'];
     
      $p = $expense -> postExpense();
@@ -70,8 +70,26 @@ if (isset($_GET['save'])) {
             
             <div id="record" class="position-fixed">
                 <h5 class=" mb-2">Record Expenses</h5>
-                <form method="GET">                
-                    <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
+                <form method="GET"> 
+                   <select class="form-control mb-2 pb-2 pt-2  border-bottom" size="4" name="expense_item_id" id="">
+                   <option selected disabled value="0"><em>Select Expense Item</em></option>
+<?php
+                       if(isset($_SESSION['user_Id'])) {
+                           $expense3 -> user_Id = $_SESSION['user_Id'];
+                           $result = $expense3->getExpenseItems();
+                           while ($data = $result ->fetch(PDO::FETCH_ASSOC)) {
+                               $expense_item_name = $data['expense_item_name'];
+                               $expense_item_id = $data['expense_item_id'];
+                            echo '<option value="'.$expense_item_id.'">'.$expense_item_name.'</option>';
+                           }
+                           
+                       }else{
+                           echo 'hmmmm';
+                        }
+?>
+                       
+                   </select><br><br>             
+<!--                    <input autofocus required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>-->
                     <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="cost"><br>
                     <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Description"></textarea>
                     <br>
@@ -115,7 +133,7 @@ if (isset($_GET['save'])) {
           $count++;
           
           $expense_id = $rows['expense_id'];
-          $expense_name = $rows['expense_name'];
+          $expense_item_name = $rows['expense_item_name'];
           $cost = $rows['cost'];
           $description = $rows['description'];
           $created_datetime = $rows['created_datetime'];
@@ -123,7 +141,7 @@ if (isset($_GET['save'])) {
                   
                   <th>'.$count.'</td>
                   
-                        <td>'.$expense_name.'</td>
+                        <td>'.$expense_item_name.'</td>
                         <td>'.$cost.'</td>
                         <td>'.$description.'</td>
                         <td>'.$created_datetime.'</td>

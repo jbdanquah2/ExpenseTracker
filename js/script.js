@@ -27,7 +27,7 @@ function myFunction() {
 }
 
 function askDelete(id,count) {
-      if (count != 1) {
+      if (count > 1) {
         alertify.confirm("<p class='bg-muted'><span class='text-warning'>Expense</span><span class='text-secondary'>|</span><span class='text-danger'>Tracker</span>","Delete? Are you sure?</p>", 
         function onOk() {
             //delay showing the confirm again 

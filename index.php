@@ -54,7 +54,7 @@ if (isset($_SESSION['user_Id']) != "") {
                                     }
                               }                          
 ?>
-                        <input required name="email" class="mb-2 mr-5 pb-2 pt-2 pl-4 pr-4 border-bottom" type="email" placeholder="yjbdanquah@gmail.com"><br>
+                        <input autofocus required name="email" class="mb-2 mr-5 pb-2 pt-2 pl-4 pr-4 border-bottom" type="email" placeholder="yjbdanquah@gmail.com"><br>
                         <input required name="pssword" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="password" placeholder="password">
                         <div class="bg-transparent border-success">
                             Please login to track your expenses
@@ -99,7 +99,7 @@ if (isset($_SESSION['user_Id']) != "") {
                 <div class="text-success">
                     <form method="post">
                        
-                        <input required name="first_name" class="mb-2 mr-5 pb-2 pt-2 pl-4 pr-4 border-bottom" type="text" placeholder="First Name"><br>
+                        <input autofocus required name="first_name" class="mb-2 mr-5 pb-2 pt-2 pl-4 pr-4 border-bottom" type="text" placeholder="First Name"><br>
                 
                         <input required name="last_name" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="text" placeholder="Last Name"><br>
                         
@@ -107,7 +107,7 @@ if (isset($_SESSION['user_Id']) != "") {
                         
                         <input required name="password" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="password" placeholder="Password"><br>
                         
-                        <input  name="budget_amount" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="number" placeholder="Initial Budget"><br>
+                        <input  name="budget_amount" class="mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" type="search" placeholder="Initial Budget"><br>
                         
                         <div class="form-group">
                         <select required name="budget_type" class="form-control mb-2 mr-5 p-2 pb-2 pt-2 pl-4 pr-4 border-bottom" id="">

@@ -10,7 +10,7 @@ $db = $database->getConnection();
 // create expense objects
 $expense = new Expense($db);
 $expense2   = new Expense($db);
-
+$expense3   = new Expense($db);
 
   if (isset($_SESSION['user_Id'])) {
       
@@ -26,7 +26,7 @@ $expense2   = new Expense($db);
       $total_expense = $stmt['total_expense'] > 0 ? "GH¢ ". $stmt['total_expense'] : "GH¢ ". 0;
         $month = $rows['month_year'];
         $name ="Welcome ". $_SESSION['first_name'];
-        $budget = $rows['budget_amount'];
+        $budget = $rows['budget_amount'] > 0 ? $rows['budget_amount'] : 0;
         $_SESSION['budget_id'] = $rows['budget_id'];
         $balance = $budget - $stmt['total_expense'] ;
   }
@@ -47,10 +47,10 @@ if (isset($_GET['save'])) {
     
 //inserts new expense record to db
     
-    $expense->expense_name = $_GET['expense_name'];
+    $expense->expense_item_id = $_GET['expense_item_id'];
     $expense->cost = $_GET['cost'];
     $expense->description = $_GET['description'];
-    $expense->budget_id = $_SESSION['budget_id'];
+//    $expense->budget_id = $_SESSION['budget_id'];
     $expense->user_Id = $_SESSION['user_Id'];
     
      $p = $expense -> postExpense();
@@ -70,10 +70,28 @@ if (isset($_GET['save'])) {
             
             <div id="record" class="position-fixed">
                 <h5 class=" mb-2">Record Budget</h5>
-                <form method="GET">                
-                    <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
-                    <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="Budget"><br>
-                    <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Item Description"></textarea>
+                <form method="GET"> 
+                   <select class="form-control mb-2 pb-2 pt-2  border-bottom" size="4" name="expense_item_id" id="">
+                   <option selected disabled value="0"><em>Select Expense Item</em></option>
+<?php
+                       if(isset($_SESSION['user_Id'])) {
+                           $expense3 -> user_Id = $_SESSION['user_Id'];
+                           $result = $expense3->getExpenseItems();
+                           while ($data = $result ->fetch(PDO::FETCH_ASSOC)) {
+                               $expense_item_name = $data['expense_item_name'];
+                               $expense_item_id = $data['expense_item_id'];
+                            echo '<option value="'.$expense_item_id.'">'.$expense_item_name.'</option>';
+                           }
+                           
+                       }else{
+                           echo 'hmmmm';
+                        }
+?>
+                       
+                   </select><br><br>             
+<!--                    <input autofocus required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>-->
+                    <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="estimated cost"><br>
+                    <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Description"></textarea>
                     <br>
                     <input name="save" class="btn btn-primary"  type="submit" value="save">
                 </form>            
@@ -83,16 +101,17 @@ if (isset($_GET['save'])) {
         <div class="col-md col-sm">
             <div id="review" class="">
                 
+
                 <br>
                 <table class="table table-hover" class="p-3">
                     <h5>Review Budget</h5> | <span class="text-warning">Count: <?php echo $num_expense?></span> | <span class="text-warning">Total: <?php echo $total_expense?></span>
-                    <input class="form-control" id="myInput" type="text" placeholder="Search Budget...">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search Expense...">
                     <thead class="thead-dark">
                       <tr>         
                         <th scope="col">#</th>
-                        <th scope="col">Expense</th>
-                        <th scope="col">Budget (GH¢)</th>
-                        <th scope="col">Actual</th>
+                        <th scope="col">Expense Items</th>
+                        <th scope="col">Budget(GH¢)</th>
+                        <th scope="col">Actual (GH¢)</th>
                         <th scope="col">Over Budget</th>
                         <th scope="col">Under Budget</th>  
                       </tr>
@@ -114,7 +133,7 @@ if (isset($_GET['save'])) {
           $count++;
           
           $expense_id = $rows['expense_id'];
-          $expense_name = $rows['expense_name'];
+          $expense_item_name = $rows['expense_item_name'];
           $cost = $rows['cost'];
           $description = $rows['description'];
           $created_datetime = $rows['created_datetime'];
@@ -122,7 +141,7 @@ if (isset($_GET['save'])) {
                   
                   <th>'.$count.'</td>
                   
-                        <td>'.$expense_name.'</td>
+                        <td>'.$expense_item_name.'</td>
                         <td>'.$cost.'</td>
                         <td>'.$description.'</td>
                         <td>'.$created_datetime.'</td>

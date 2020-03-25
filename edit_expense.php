@@ -50,9 +50,27 @@ if (isset($_GET['save'])) {
         <div class="col-md col-sm p-5">
             
             <div id="record" class="m">
-                <h3 class=" mb-2">Record</h3>
-                <form method="GET" class="">                
-                    <input required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>
+                <h5 class=" mb-2">Record Expenses</h5>
+                <form method="GET" class="">
+                <select class="form-control mb-2 pb-2 pt-2  border-bottom" size="4" name="expense_item_id" id="">
+                   <option selected disabled value="0"><em>Select Expense Item</em></option>
+<?php
+                       if(isset($_SESSION['user_Id'])) {
+                           $expense3 -> user_Id = $_SESSION['user_Id'];
+                           $result = $expense3->getExpenseItems();
+                           while ($data = $result ->fetch(PDO::FETCH_ASSOC)) {
+                               $expense_item_name = $data['expense_item_name'];
+                               $expense_item_id = $data['expense_item_id'];
+                            echo '<option value="'.$expense_item_id.'">'.$expense_item_name.'</option>';
+                           }
+                           
+                       }else{
+                           echo 'hmmmm';
+                        }
+?>
+                       
+                   </select><br><br>                 
+<!--                    <input autofocus required name="expense_name" class="form-control pb-2 pt-2 border-bottom"  type="text" placeholder="Expense Type"><br/>-->
                     <input required name="cost" class="form-control mb-2 pb-2 pt-2  border-bottom" size="50" type="text" placeholder="cost"><br>
                     <textarea required name="description" class="form-control pb-2 pt-2 border-bottom" width="50" type="textarea" placeholder="Description"></textarea>
                     <br>
@@ -71,7 +89,7 @@ if (isset($_GET['save'])) {
 ?>
                 <br>
                 <table class="table table-hover" class="p-3">
-                    <h3>Update</h3> | <small class="text-warning">Count: <?php echo $num_expense?></small> | <small class="text-warning">Total: <?php echo $total_expense?></small>
+                    <h5>Update Expenses</h5> | <small class="text-warning">Count: <?php echo $num_expense?></small> | <small class="text-warning">Total: <?php echo $total_expense?></small>
 <!--                    <input class="form-control" id="myInput" type="text" placeholder="Search Expense...">-->
                     <thead class="thead-dark">
                       <tr>         
@@ -97,14 +115,14 @@ if (isset($_GET['save'])) {
       
           $count++;
           $expense_id = $stmt['expense_id'];
-          $expense_name = $stmt['expense_name'];
+          $expense_item_name = $stmt['expense_item_name'];
           $cost = $stmt['cost'];
           $description = $stmt['description'];
           $created_datetime = $stmt['created_datetime'];
           echo '<tr> 
            <form method="GET">
                 <th>'.$count.'</td>
-                <td>'.'<input name="expense_name" value="'.$expense_name.'">'.'</td>
+                <td>'.$expense_item_name.'</td>
                 <td>'.'<input name="cost" size="4" value="'.$cost.'">'.'</td>
                 <td>'.'<input name="description" height="48" value="'.$description.'">'.'</td>
                 <td>'.$created_datetime.'</td>
